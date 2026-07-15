@@ -334,6 +334,11 @@
     color: #fff;
   }
   .btn-pdf:hover { background: #b91c1c; }
+  .btn-email {
+    background: #059669;
+    color: #fff;
+  }
+  .btn-email:hover { background: #047857; }
   .btn-copy {
     background: var(--surface-1);
     color: var(--text-primary);
@@ -602,18 +607,18 @@ function renderSummary(cont) {
     <div class="export-title">Exportar Briefing</div>
     <div class="export-desc">Gere o documento para enviar ao cliente ou guardar no arquivo.</div>
     <div class="export-btns">
-      <button class="export-btn btn-word" onclick="exportWord()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Baixar Word (.docx)
-      </button>
       <button class="export-btn btn-pdf" onclick="exportPDF()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Baixar PDF
       </button>
+      <button class="export-btn btn-email" onclick="sendEmail()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        Enviar por E-mail
+      </button>
     </div>
     <button class="btn-copy" onclick="copyText(this)" style="margin-top:8px;width:100%">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      Copiar texto simples
+      Copiar texto simples (cole no Word ou em algum documento)
     </button>
     <div class="loading-msg" id="loadingMsg">⏳ Gerando documento, aguarde...</div>
   </div>
@@ -626,86 +631,12 @@ function renderSummary(cont) {
   cont.innerHTML = html;
 }
 
-/* ───── EXPORT WORD ───── */
-function exportWord() {
-  document.getElementById('loadingMsg').style.display = 'block';
-
-  // Build RTF (compatible with Word) as a data URI
-  // We'll use a proper docx via js-docx library loaded from CDN
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js';
-  script.onload = () => {
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType, ShadingType, PageBreak } = docx;
-
-    const children = [];
-
-    // Title
-    children.push(new Paragraph({
-      children: [new TextRun({ text: 'M|Markt Marketing Estratégico', bold: true, size: 32, color: '0f172a' })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 100 }
-    }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: 'Briefing — Tráfego Pago', size: 26, color: '1a56db' })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 80 }
-    }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: 'Data: ' + new Date().toLocaleDateString('pt-BR'), size: 20, color: '6b7280' })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 400 }
-    }));
-
-    sections.forEach((s, si) => {
-      // Section header
-      children.push(new Paragraph({
-        children: [new TextRun({ text: s.icon + '  ' + s.title.toUpperCase(), bold: true, size: 24, color: '1a56db' })],
-        spacing: { before: 300, after: 160 },
-        border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'dbeafe' } }
-      }));
-
-      s.questions.forEach(q => {
-        children.push(new Paragraph({
-          children: [new TextRun({ text: q.label, bold: true, size: 20, color: '374151' })],
-          spacing: { before: 160, after: 40 }
-        }));
-        children.push(new Paragraph({
-          children: [new TextRun({ text: q.q, size: 18, color: '6b7280', italics: true })],
-          spacing: { after: 60 }
-        }));
-        const ans = answers[q.id] || '—';
-        children.push(new Paragraph({
-          children: [new TextRun({ text: ans, size: 20, color: '111827' })],
-          spacing: { after: 120 },
-          indent: { left: 360 }
-        }));
-      });
-    });
-
-    // Footer
-    children.push(new Paragraph({
-      children: [new TextRun({ text: 'Documento gerado por M|Markt Marketing Estratégico', size: 16, color: '9ca3af' })],
-      alignment: AlignmentType.CENTER,
-      spacing: { before: 600 }
-    }));
-
-    const doc = new Document({ sections: [{ children }] });
-
-    Packer.toBlob(doc).then(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      const clientName = (answers['nome_empresa'] || 'briefing').replace(/[^a-z0-9]/gi, '_');
-      a.download = 'MMarkt_Briefing_' + clientName + '.docx';
-      a.click();
-      URL.revokeObjectURL(url);
-      document.getElementById('loadingMsg').style.display = 'none';
-    });
-  };
-  script.onerror = () => {
-    document.getElementById('loadingMsg').textContent = '❌ Erro ao carregar biblioteca. Tente copiar o texto.';
-  };
-  document.head.appendChild(script);
+/* ───── SEND EMAIL ───── */
+function sendEmail() {
+  const clientName = answers['nome_empresa'] || 'Novo Cliente';
+  const subject = encodeURIComponent('Briefing — ' + clientName + ' | M|Markt Marketing Estratégico');
+  const body = encodeURIComponent(getAnswerText());
+  window.location.href = 'mailto:matheus.salla@gmail.com?subject=' + subject + '&body=' + body;
 }
 
 /* ───── EXPORT PDF ───── */
