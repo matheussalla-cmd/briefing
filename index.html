@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing — M|Markt Marketing Estratégico</title>
+<style>
+  :root {
+    --accent: #1a56db;
+    --accent-light: #e8f0fe;
+    --accent-border: #93b4f7;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --surface-0: #f3f4f6;
+    --surface-1: #f9fafb;
+    --surface-2: #ffffff;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --radius: 8px;
+    --success: #059669;
+    --success-light: #ecfdf5;
+    --warning: #d97706;
+    --warning-light: #fffbeb;
+    --danger: #dc2626;
+    --danger-light: #fef2f2;
+    --pro: #7c3aed;
+    --pro-light: #f5f3ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: #0f172a;
+    padding: 18px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,.25);
+  }
+  .logo-mark {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .logo-mark span { color: #60a5fa; }
+  .logo-text {
+    font-size: 11px;
+    color: #94a3b8;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 3px;
+  }
+  .header-right {
+    margin-left: auto;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: #0f172a;
+    padding: 0 20px 14px;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: #1e293b;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 100px;
+    transition: width .35s ease;
+  }
+
+  /* NAV PILLS */
+  .section-nav {
+    padding: 12px 16px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-1);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .nav-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+  .nav-btn.active {
+    background: var(--accent-light);
+    border-color: var(--accent-border);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .nav-btn.done::after { content: ' ✓'; }
+
+  /* MAIN */
+  .main { padding: 16px; max-width: 680px; margin: 0 auto; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .section-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .section-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .section-count { margin-left: auto; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+  /* QUESTION CARDS */
+  .q-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .q-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 4px;
+  }
+  .q-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .q-input {
+    width: 100%;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 11px;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-family: inherit;
+    resize: vertical;
+    min-height: 56px;
+    outline: none;
+    transition: border .15s;
+    line-height: 1.5;
+  }
+  .q-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,86,219,.08); }
+  .q-input::placeholder { color: var(--text-muted); }
+
+  .q-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .q-tag {
+    font-size: 12px;
+    padding: 5px 11px;
+    border-radius: 100px;
+    background: var(--surface-1);
+    border: 1px solid var(--border-strong);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .q-tag:hover { border-color: var(--accent-border); color: var(--accent); }
+  .q-tag.sel {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* NAV FOOTER */
+  .nav-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-bottom: 4px;
+  }
+  .btn-prev, .btn-next {
+    flex: 1;
+    padding: 11px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text-primary);
+  }
+  .btn-prev:hover { background: var(--surface-1); }
+  .btn-prev:disabled { opacity: .35; cursor: default; }
+  .btn-next {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-next:hover { background: #1749c0; }
+
+  /* SUMMARY */
+  .summary-intro {
+    background: var(--success-light);
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #065f46;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .summary-section-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .summary-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .summary-row {
+    display: flex;
+    gap: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-q { color: var(--text-secondary); width: 42%; flex-shrink: 0; }
+  .summary-a { color: var(--text-primary); font-weight: 500; word-break: break-word; }
+
+  /* EXPORT BUTTONS */
+  .export-section {
+    margin-top: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .export-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .export-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+  .export-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .export-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: none;
+  }
+  .btn-word {
+    background: #1d4ed8;
+    color: #fff;
+  }
+  .btn-word:hover { background: #1e40af; }
+  .btn-pdf {
+    background: #dc2626;
+    color: #fff;
+  }
+  .btn-pdf:hover { background: #b91c1c; }
+  .btn-copy {
+    background: var(--surface-1);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong) !important;
+    border-radius: var(--radius);
+    flex: 0 0 auto;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-copy:hover { background: var(--surface-0); }
+
+  .loading-msg {
+    display: none;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 480px) {
+    .main { padding: 12px; }
+    .section-desc { display: none; }
+  }
+  @media print {
+    .header, .progress-wrap, .section-nav, .nav-footer, .export-section { display: none !important; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo-mark">M<span>|</span>Markt</div>
+    <div class="logo-text">Marketing Estratégico</div>
+  </div>
+  <div class="header-right" id="headerDate"></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="progressLabel">Seção 1 de 6</span>
+    <span id="progressPct">17%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:17%"></div>
+  </div>
+</div>
+
+<div class="section-nav" id="sectionNav"></div>
+
+<div class="main" id="mainContent"></div>
+
+<script>
+const sections = [
+  {
+    icon: "🏢", bg: "#e8f0fe", title: "Negócio & Contexto",
+    desc: "Entenda quem é o cliente antes de qualquer estratégia",
+    questions: [
+      { id:"nome_empresa", label:"Nome da empresa", q:"Qual o nome da empresa / marca?", type:"text", ph:"Ex: Studio Beleza Bella" },
+      { id:"segmento", label:"Segmento", q:"Em qual segmento/nicho atua?", type:"text", ph:"Ex: estética, imobiliário, e-commerce..." },
+      { id:"tempo_mercado", label:"Tempo de mercado", q:"Há quanto tempo a empresa está no mercado?", type:"tags", tags:["Menos de 1 ano","1–3 anos","3–5 anos","5–10 anos","Mais de 10 anos"] },
+      { id:"diferencial", label:"Diferencial competitivo", q:"Qual o maior diferencial da empresa em relação à concorrência?", type:"text", ph:"O que os torna únicos?" },
+      { id:"ticket", label:"Ticket médio", q:"Qual é o ticket médio do produto/serviço?", type:"text", ph:"Ex: R$ 500, R$ 1.200..." },
+    ]
+  },
+  {
+    icon: "🎯", bg: "#ecfdf5", title: "Objetivo da Campanha",
+    desc: "Defina exatamente o que o cliente quer alcançar",
+    questions: [
+      { id:"objetivo_principal", label:"Objetivo principal", q:"Qual é o objetivo principal das campanhas?", type:"tags", tags:["Gerar leads","Vendas diretas","Reconhecimento de marca","Tráfego no site","App installs","Outros"] },
+      { id:"meta_numero", label:"Meta numérica", q:"Existe uma meta numérica definida? (ex: 50 leads/mês, R$ 30k em vendas)", type:"text", ph:"Descreva a meta..." },
+      { id:"prazo_resultados", label:"Prazo esperado", q:"Em quanto tempo espera ver resultados significativos?", type:"tags", tags:["60 dias","90 dias","6 meses","12 meses","Sem prazo definido"] },
+      { id:"cpa_esperado", label:"CPA / CPL esperado", q:"Tem noção do custo por aquisição/lead que considera aceitável?", type:"text", ph:"Ex: até R$ 30 por lead" },
+    ]
+  },
+  {
+    icon: "👥", bg: "#f5f3ff", title: "Público-Alvo",
+    desc: "Quanto mais detalhado, mais precisa será a segmentação",
+    questions: [
+      { id:"publico_ideal", label:"Cliente ideal", q:"Descreva o cliente ideal: quem compra ou deveria comprar?", type:"text", ph:"Perfil, renda, comportamento..." },
+      { id:"faixa_etaria", label:"Faixa etária", q:"Qual a faixa etária do público principal?", type:"tags", tags:["18–24","25–34","35–44","45–54","55+","Múltiplas faixas"] },
+      { id:"localizacao", label:"Localização", q:"Qual a área geográfica de atuação?", type:"text", ph:"Cidade, estado, país, raio..." },
+      { id:"comportamento", label:"Interesses e dores", q:"Quais são os interesses, comportamentos ou dores do público? O que eles buscam?", type:"text", ph:"Detalhe ao máximo..." },
+      { id:"persona_existe", label:"Persona documentada", q:"Já existe uma persona ou pesquisa de público documentada?", type:"tags", tags:["Sim, tenho documentado","Parcialmente","Não, vamos construir juntos"] },
+    ]
+  },
+  {
+    icon: "📢", bg: "#fffbeb", title: "Produto & Oferta",
+    desc: "Entenda o que será anunciado e como converter",
+    questions: [
+      { id:"produto", label:"Produto/Serviço", q:"Qual produto ou serviço será o foco das campanhas?", type:"text", ph:"Descreva o que será anunciado..." },
+      { id:"landing_page", label:"Destino do anúncio", q:"Para onde o anúncio vai direcionar?", type:"tags", tags:["Site/Blog","Landing page","WhatsApp","CRM do Facebook","Loja física","App","E-commerce"] },
+      { id:"lp_existe", label:"Destino pronto?", q:"O destino/landing page já existe ou precisa ser criado?", type:"tags", tags:["Já existe e está boa","Existe mas precisa melhorar","Precisa ser criado"] },
+      { id:"oferta", label:"Oferta/CTA principal", q:"Qual a oferta ou chamada para ação principal?", type:"text", ph:"Ex: orçamento grátis, desconto, e-book..." },
+      { id:"sazonalidade", label:"Sazonalidade", q:"Existem épocas do ano mais importantes para o negócio?", type:"text", ph:"Ex: Black Friday, verão, natal..." },
+    ]
+  },
+  {
+    icon: "📊", bg: "#fef2f2", title: "Histórico & Plataformas",
+    desc: "Entenda o que já foi feito para não partir do zero",
+    questions: [
+      { id:"plataformas", label:"Plataformas desejadas", q:"Quais plataformas de anúncio deseja usar?", type:"tags", tags:["Meta Ads (Facebook/Instagram)","Google Ads","TikTok Ads","LinkedIn Ads","Todas","Definir juntos"] },
+      { id:"historico_ads", label:"Histórico em anúncios", q:"Já investiu em tráfego pago antes? Quanto tempo e em quais plataformas?", type:"text", ph:"Descreva o histórico..." },
+      { id:"pixel_ga", label:"Rastreamento instalado", q:"Possui Pixel do Meta e/ou Google Tag Manager instalado?", type:"tags", tags:["Sim, ambos","Só Pixel Meta","Só GTM/GA","Nenhum","Não sei"] },
+      { id:"criativos", label:"Criativos disponíveis", q:"Tem fotos, vídeos ou materiais de divulgação disponíveis?", type:"tags", tags:["Tenho bastante material","Tenho pouco material","Precisarei produzir tudo","Parcialmente"] },
+      { id:"agencia_anterior", label:"Gestor/agência anterior", q:"Já trabalhou com outro gestor ou agência? O que funcionou ou não funcionou?", type:"text", ph:"Relate a experiência..." },
+    ]
+  },
+  {
+    icon: "💰", bg: "#ecfdf5", title: "Investimento & Gestão",
+    desc: "Alinhe expectativas financeiras desde o início",
+    questions: [
+      { id:"orcamento_mes", label:"Orçamento mensal em mídia", q:"Qual o orçamento mensal disponível para investir nos anúncios (somente mídia)?", type:"tags", tags:["Até R$ 1.000","R$ 1.000–3.000","R$ 3.000–7.000","R$ 7.000–15.000","Acima de R$ 15.000","A definir"] },
+      { id:"ciclo_venda", label:"Ciclo de venda", q:"Qual é o ciclo de venda? (do lead ao fechamento)", type:"tags", tags:["Imediato (e-commerce)","1–7 dias","7–30 dias","Mais de 30 dias"] },
+      { id:"fluxo_atendimento", label:"Fluxo de atendimento", q:"Quem vai atender os leads gerados? Existe processo de vendas definido?", type:"text", ph:"Descreva o processo..." },
+      { id:"relatorios", label:"Frequência de relatórios", q:"Com que frequência deseja receber relatórios de desempenho?", type:"tags", tags:["Semanal","Quinzenal","Mensal","Por demanda"] },
+      { id:"ferramentas_crm", label:"CRM / Ferramentas", q:"Usa algum CRM ou ferramenta de gestão de clientes?", type:"text", ph:"Ex: RD Station, HubSpot, Pipedrive..." },
+    ]
+  }
+];
+
+const answers = {};
+let current = 0;
+
+// Date
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+
+// Build nav
+const nav = document.getElementById('sectionNav');
+sections.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.className = 'nav-btn' + (i === 0 ? ' active' : '');
+  b.id = 'navBtn' + i;
+  b.textContent = (i + 1) + '. ' + s.title.split(' ')[0];
+  b.onclick = () => goTo(i);
+  nav.appendChild(b);
+});
+
+function saveTextareas() {
+  document.querySelectorAll('.q-input').forEach(el => {
+    answers[el.dataset.id] = el.value;
+  });
+}
+
+function goTo(idx) {
+  saveTextareas();
+  current = idx;
+  render();
+}
+
+function navigate(dir) {
+  saveTextareas();
+  const next = current + dir;
+  if (next < 0 || next > sections.length) return;
+  current = next;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectTag(id, val, el) {
+  answers[id] = val;
+  el.closest('.q-tags').querySelectorAll('.q-tag').forEach(t => t.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function render() {
+  updateProgress();
+  updateNav();
+  const cont = document.getElementById('mainContent');
+
+  if (current === sections.length) {
+    renderSummary(cont);
+    return;
+  }
+
+  const s = sections[current];
+  let html = `
+    <div class="section-header">
+      <div class="section-icon" style="background:${s.bg}">${s.icon}</div>
+      <div>
+        <div class="section-title">${s.title}</div>
+        <div class="section-desc">${s.desc}</div>
+      </div>
+      <div class="section-count">${current + 1} / ${sections.length}</div>
+    </div>`;
+
+  s.questions.forEach(q => {
+    html += `<div class="q-card"><div class="q-label">${q.label}</div><div class="q-text">${q.q}</div>`;
+    if (q.type === 'text') {
+      const val = answers[q.id] || '';
+      html += `<textarea class="q-input" data-id="${q.id}" placeholder="${q.ph || 'Digite aqui...'}">${val}</textarea>`;
+    } else {
+      html += `<div class="q-tags">`;
+      q.tags.forEach(t => {
+        const sel = answers[q.id] === t ? ' sel' : '';
+        html += `<span class="q-tag${sel}" onclick="selectTag('${q.id}',this.textContent,this)">${t}</span>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+
+  html += `<div class="nav-footer">
+    <button class="btn-prev" onclick="navigate(-1)" ${current === 0 ? 'disabled' : ''}>← Anterior</button>
+    <button class="btn-next" onclick="navigate(1)">${current === sections.length - 1 ? 'Ver Resumo →' : 'Próximo →'}</button>
+  </div>`;
+
+  cont.innerHTML = html;
+}
+
+function updateProgress() {
+  const total = sections.length + 1;
+  const pct = Math.round(((current + 1) / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressLabel').textContent =
+    current < sections.length ? `Seção ${current + 1} de ${sections.length}` : 'Resumo final';
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === current);
+  });
+}
+
+function getAnswerText() {
+  let txt = 'BRIEFING — TRÁFEGO PAGO\nM|Markt Marketing Estratégico\n';
+  txt += '='.repeat(42) + '\n';
+  txt += 'Data: ' + new Date().toLocaleDateString('pt-BR') + '\n\n';
+  sections.forEach(s => {
+    txt += `${s.icon} ${s.title.toUpperCase()}\n`;
+    s.questions.forEach(q => {
+      txt += `  ${q.label}: ${answers[q.id] || '—'}\n`;
+    });
+    txt += '\n';
+  });
+  return txt;
+}
+
+function renderSummary(cont) {
+  let html = `<div class="summary-intro">✅ Briefing concluído! Revise as respostas e exporte o documento.</div>`;
+
+  sections.forEach(s => {
+    html += `<div class="summary-section-card">
+      <div class="summary-section-header">${s.icon} ${s.title}</div>`;
+    s.questions.forEach(q => {
+      html += `<div class="summary-row">
+        <span class="summary-q">${q.label}</span>
+        <span class="summary-a">${answers[q.id] || '<span style="color:var(--text-muted)">Não preenchido</span>'}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `
+  <div class="export-section">
+    <div class="export-title">Exportar Briefing</div>
+    <div class="export-desc">Gere o documento para enviar ao cliente ou guardar no arquivo.</div>
+    <div class="export-btns">
+      <button class="export-btn btn-word" onclick="exportWord()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Baixar Word (.docx)
+      </button>
+      <button class="export-btn btn-pdf" onclick="exportPDF()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Baixar PDF
+      </button>
+    </div>
+    <button class="btn-copy" onclick="copyText(this)" style="margin-top:8px;width:100%">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copiar texto simples
+    </button>
+    <div class="loading-msg" id="loadingMsg">⏳ Gerando documento, aguarde...</div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn-prev" onclick="navigate(-1)">← Voltar</button>
+    <button class="btn-next" onclick="navigate(0)">Recomeçar</button>
+  </div>`;
+
+  cont.innerHTML = html;
+}
+
+/* ───── EXPORT WORD ───── */
+function exportWord() {
+  document.getElementById('loadingMsg').style.display = 'block';
+
+  // Build RTF (compatible with Word) as a data URI
+  // We'll use a proper docx via js-docx library loaded from CDN
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js';
+  script.onload = () => {
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType, ShadingType, PageBreak } = docx;
+
+    const children = [];
+
+    // Title
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'M|Markt Marketing Estratégico', bold: true, size: 32, color: '0f172a' })],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 100 }
+    }));
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'Briefing — Tráfego Pago', size: 26, color: '1a56db' })],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 80 }
+    }));
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'Data: ' + new Date().toLocaleDateString('pt-BR'), size: 20, color: '6b7280' })],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 400 }
+    }));
+
+    sections.forEach((s, si) => {
+      // Section header
+      children.push(new Paragraph({
+        children: [new TextRun({ text: s.icon + '  ' + s.title.toUpperCase(), bold: true, size: 24, color: '1a56db' })],
+        spacing: { before: 300, after: 160 },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'dbeafe' } }
+      }));
+
+      s.questions.forEach(q => {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: q.label, bold: true, size: 20, color: '374151' })],
+          spacing: { before: 160, after: 40 }
+        }));
+        children.push(new Paragraph({
+          children: [new TextRun({ text: q.q, size: 18, color: '6b7280', italics: true })],
+          spacing: { after: 60 }
+        }));
+        const ans = answers[q.id] || '—';
+        children.push(new Paragraph({
+          children: [new TextRun({ text: ans, size: 20, color: '111827' })],
+          spacing: { after: 120 },
+          indent: { left: 360 }
+        }));
+      });
+    });
+
+    // Footer
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'Documento gerado por M|Markt Marketing Estratégico', size: 16, color: '9ca3af' })],
+      alignment: AlignmentType.CENTER,
+      spacing: { before: 600 }
+    }));
+
+    const doc = new Document({ sections: [{ children }] });
+
+    Packer.toBlob(doc).then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const clientName = (answers['nome_empresa'] || 'briefing').replace(/[^a-z0-9]/gi, '_');
+      a.download = 'MMarkt_Briefing_' + clientName + '.docx';
+      a.click();
+      URL.revokeObjectURL(url);
+      document.getElementById('loadingMsg').style.display = 'none';
+    });
+  };
+  script.onerror = () => {
+    document.getElementById('loadingMsg').textContent = '❌ Erro ao carregar biblioteca. Tente copiar o texto.';
+  };
+  document.head.appendChild(script);
+}
+
+/* ───── EXPORT PDF ───── */
+function exportPDF() {
+  document.getElementById('loadingMsg').style.display = 'block';
+
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload = () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = 210, pageH = 297, margin = 18, contentW = pageW - margin * 2;
+    let y = margin;
+
+    const checkPage = (needed = 10) => {
+      if (y + needed > pageH - margin) { doc.addPage(); y = margin; }
+    };
+
+    // Header block
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, pageW, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+    doc.text('M|Markt Marketing Estratégico', margin, 11);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(148, 163, 184);
+    doc.text('Briefing — Tráfego Pago', margin, 19);
+    doc.text('Data: ' + new Date().toLocaleDateString('pt-BR'), pageW - margin, 19, { align: 'right' });
+    y = 38;
+
+    sections.forEach((s, si) => {
+      checkPage(20);
+
+      // Section bar
+      doc.setFillColor(26, 86, 219);
+      doc.rect(margin, y, contentW, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+      doc.text(s.title.toUpperCase(), margin + 3, y + 5.5);
+      y += 12;
+
+      s.questions.forEach(q => {
+        checkPage(18);
+        // Question label
+        doc.setTextColor(107, 114, 128);
+        doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
+        doc.text(q.label.toUpperCase(), margin, y);
+        y += 4.5;
+
+        // Question text
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(8.5); doc.setFont('helvetica', 'italic');
+        const qLines = doc.splitTextToSize(q.q, contentW);
+        qLines.forEach(line => { checkPage(5); doc.text(line, margin, y); y += 4.5; });
+        y += 1;
+
+        // Answer
+        const ans = answers[q.id] || '—';
+        doc.setTextColor(17, 24, 39);
+        doc.setFontSize(9.5); doc.setFont('helvetica', 'normal');
+        doc.setFillColor(249, 250, 251);
+        const ansLines = doc.splitTextToSize(ans, contentW - 8);
+        const ansH = ansLines.length * 5 + 5;
+        checkPage(ansH + 2);
+        doc.rect(margin, y - 2, contentW, ansH, 'F');
+        doc.setDrawColor(229, 231, 235);
+        doc.rect(margin, y - 2, contentW, ansH, 'S');
+        ansLines.forEach(line => { doc.text(line, margin + 3, y + 2); y += 5; });
+        y += 5;
+      });
+      y += 4;
+    });
+
+    // Footer
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+      doc.setTextColor(156, 163, 175);
+      doc.text('M|Markt Marketing Estratégico — Documento confidencial', margin, pageH - 8);
+      doc.text('Página ' + i + ' de ' + pageCount, pageW - margin, pageH - 8, { align: 'right' });
+    }
+
+    const clientName = (answers['nome_empresa'] || 'briefing').replace(/[^a-z0-9]/gi, '_');
+    doc.save('MMarkt_Briefing_' + clientName + '.pdf');
+    document.getElementById('loadingMsg').style.display = 'none';
+  };
+  script.onerror = () => {
+    document.getElementById('loadingMsg').textContent = '❌ Erro ao carregar biblioteca. Tente copiar o texto.';
+  };
+  document.head.appendChild(script);
+}
+
+/* ───── COPY TEXT ───── */
+function copyText(btn) {
+  const txt = getAnswerText();
+  navigator.clipboard.writeText(txt).then(() => {
+    const orig = btn.innerHTML;
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => { btn.innerHTML = orig; }, 2000);
+  }).catch(() => alert('Não foi possível copiar automaticamente.'));
+}
+
+// Start
+render();
+</script>
+</body>
+</html>
